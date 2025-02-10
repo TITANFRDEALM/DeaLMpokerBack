@@ -6,30 +6,41 @@ use App\Entity\Nft;
 use App\Repository\NftRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Serializer\SerializerInterface;
 
-#[Route('api/card', name:'app_api_card')]
+#[Route('api/card', name:'app_api_card_')]
 final class CardController extends AbstractController
 {
-    public function __construct(private EntityManagerInterface $manager, private NftRepository $repository)
+    public function __construct(
+        private EntityManagerInterface $manager, 
+        private NftRepository $repository,
+        private SerializerInterface $serializer,
+        private UrlGeneratorInterface $urlGenerator)
     {
     }
 
-    #[Route(name: 'new', methods: 'POST')]
-    public function new(): Response
+    #[Route(methods: 'POST')]
+    public function new(Request $request): JsonResponse
     {
-        $nft = new Nft();
-        $nft->setName('TITAN2');
-        $nft->setFirstname('Maxime2');
+        $nft = $this->serializer->deserialize($request->getContent(), Nft::class, 'json');
 
         $this->manager->persist($nft);
         $this->manager->flush();
 
-        return $this->json(
-            ['message' => "Card resource created with {$nft->getId()} id"],
-            Response::HTTP_CREATED,
+        $responseData = $this->serializer->serialize($nft,'json');
+        $location = $this->urlGenerator->generate(
+            'app_api_card_show',
+            ['id' => $nft->getId()],
+            UrlGeneratorInterface::ABSOLUTE_URL,
         );
+
+        return new JsonResponse($responseData,
+            Response::HTTP_CREATED, ["Location" => $location], true);
     }
 
     #[Route('/{id}', name: 'show', methods: 'GET')]
