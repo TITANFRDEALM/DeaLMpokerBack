@@ -38,7 +38,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?\DateTimeImmutable $updateAt = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $apiToken = null;
+    private ?string $apiToken;
 
     public function __construct()
     {

@@ -22,3 +22,15 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+# config/packages/security.yaml
+
+security:
+    # ...
+    firewalls:
+        main:
+            # ...
+        stateless: true    
+        json_login:
+                # api_login is a route we will create below
+                check_path: app_api_login
