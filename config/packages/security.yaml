@@ -17,8 +17,11 @@ security:
             lazy: true
             provider: app_user_provider
             stateless: true
-            json_login :
-                check_path: /api/login
+            custom_authenticator: App\Security\ApiTokenAuthenticator
+            json_login:
+                login_path: app_api_login # Chemin vers lequel votre client envoie la requête POST
+                check_path: app_api_login # Doit correspondre à login_path
+            
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -30,8 +33,9 @@ security:
     # Note: Only the *first* access control that matches will be used
 
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/api/registration, roles: PUBLIC_ACCESS }
+        - { path: ^/api/login, roles: PUBLIC_ACCESS }
+        - { path: ^/api, roles: ROLE_USER }
 
 when@test:
     security:
