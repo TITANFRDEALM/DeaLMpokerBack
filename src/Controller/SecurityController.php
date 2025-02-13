@@ -49,6 +49,8 @@ final class SecurityController extends AbstractController
                     schema: new Schema(
                         type: "object",
                         properties: [
+                            new Property(property: "name", type: "string", example: "nom"),
+                            new Property(property: "firstname", type: "string", example: "prenom"),
                             new Property(property: "email", type: "string", example: "adresse@mail.com"),
                             new Property(property: "password", type: "string", example: "Mot de passe")
                         ]
