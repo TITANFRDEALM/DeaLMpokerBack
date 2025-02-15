@@ -13,4 +13,17 @@ class SmokeTest extends WebTestCase
         $client->request('GET', '/api/doc');
         self::assertResponseIsSuccessful();
     }
+    public function testApiAccountUrlIsSecure(): void
+
+    {
+
+        $client = self::createClient();
+
+        $client->followRedirects(false);
+
+        $client->request('GET', '/api/account/me');
+
+        self::assertResponseStatusCodeSame(401);
+
+    }
 }
